@@ -42,24 +42,24 @@ namespace 小算盤
                 }
                 else
                 {
-                    double b = stack.Pop();
-                    double a = stack.Pop();
+                    double rightNum = stack.Pop();
+                    double leftNum = stack.Pop();
                     switch (op)
                     {
                         case "+":
-                            stack.Push(a + b);
+                            stack.Push(leftNum + rightNum);
                             break;
                         case "-":
-                            stack.Push(a - b);
+                            stack.Push(leftNum - rightNum);
                             break;
                         case "*":
-                            stack.Push(a * b);
+                            stack.Push(leftNum * rightNum);
                             break;
                         case "/":
-                            stack.Push(a / b);
+                            stack.Push(leftNum / rightNum);
                             break;
                         case "^":
-                            stack.Push(double.Parse(Math.Pow(double.Parse(a.ToString()), double.Parse(b.ToString())).ToString()));
+                            stack.Push(Math.Pow(leftNum,rightNum));
                             break;
                         default:
                             break;
