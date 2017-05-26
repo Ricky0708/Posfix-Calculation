@@ -22,7 +22,7 @@ namespace 小算盤
         };
 
         public static double Calculate(string formula)
-        {
+        { 
             double result = 0;
             var stack = new Stack<double>();
             var posfix = ConvertToPosfix(formula);
