@@ -21,8 +21,6 @@ namespace 小算盤
 
         private void button1_Click(object sender, EventArgs e)
         {
-           
-
             MessageBox.Show(Formula.Calculate(textBox1.Text).ToString());
         }
 
