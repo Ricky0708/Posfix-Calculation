@@ -20,6 +20,8 @@ namespace 小算盤
             { "-", new Priority(){ OP = "-", ISP = 12, ICP=12 } },
             { "*", new Priority(){ OP = "*", ISP = 13, ICP=13 } },
             { "/", new Priority(){ OP = "/", ISP = 13, ICP=13 } },
+            { "%", new Priority(){ OP = "%", ISP = 13, ICP=13 } },
+            { "\\", new Priority(){ OP = "\\", ISP = 13, ICP=13 } },
             { "^", new Priority(){ OP = "^", ISP = 13, ICP=13 } },
         };
         public Form1()
@@ -58,9 +60,16 @@ namespace 小算盤
                         case "/":
                             stack.Push(leftNum / rightNum);
                             break;
-                        case "^":
-                            stack.Push(Math.Pow(leftNum,rightNum));
+                        case "%":
+                            stack.Push(leftNum % rightNum);
                             break;
+                        case "\\":
+                            stack.Push(Math.Floor(leftNum / rightNum));
+                            break;
+                        case "^":
+                            stack.Push(Math.Pow(leftNum, rightNum));
+                            break;
+
                         default:
                             break;
                     }
@@ -141,6 +150,8 @@ namespace 小算盤
                         case "-":
                         case "*":
                         case "/":
+                        case "%":
+                        case "\\":
                         case "^":
                         case ")":
                             if (!string.IsNullOrEmpty(tempOP.ToString()))
