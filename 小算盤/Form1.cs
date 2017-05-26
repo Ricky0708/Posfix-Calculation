@@ -12,19 +12,33 @@ namespace 小算盤
 {
     public partial class Form1 : Form
     {
-  
+
         public Form1()
         {
             InitializeComponent();
             textBox1.Text = @"(10+98*5+(99-100)+7)/2 ^ 5 % 99 \ 2";
         }
-
         private void button1_Click(object sender, EventArgs e)
         {
-            MessageBox.Show(Formula.Calculate(textBox1.Text).ToString());
+            var formula = textBox1.Text;
+            int aa = 1000000;
+            var check = Formula.Calculate(textBox1.Text).ToString();
+            for (int i = 0; i < 1000000; i++)
+            {
+                var n = Formula.Calculate(formula).ToString();
+                if (n != check)
+                {
+                    MessageBox.Show("QQ");
+                }
+                aa -= 1;
+                if (aa == 0)
+                {
+                    MessageBox.Show("finish");
+                }
+            }
         }
 
- 
+
     }
 }
 //private void button2_Click(object sender, EventArgs e)
