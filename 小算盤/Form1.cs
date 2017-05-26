@@ -27,7 +27,7 @@ namespace 小算盤
         public Form1()
         {
             InitializeComponent();
-            textBox1.Text = @"(10+98*5+(99-100)+7)/2";
+            textBox1.Text = @"(10+98*5+(99-100)+7)/2 ^ 5 % 99 \ 2";
         }
 
         private void button1_Click(object sender, EventArgs e)
