@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace 小算盤
 {
-    public static class Formula
+    public static class FormulaUseQueue
     {
         private static Dictionary<char, Priority> OperatorMap = new Dictionary<char, Priority>()
         {
@@ -26,10 +26,9 @@ namespace 小算盤
             double result = 0;
             var stack = new Stack<double>();
             var posfix = ConvertToPosfix(formula);
-            var position = 0;
-            while (!string.IsNullOrEmpty(posfix[position]))
+            while (posfix.Count > 0)
             {
-                string op = posfix[position];
+                string op = posfix.Dequeue();
                 if (double.TryParse(op, out double operand))
                 {
                     stack.Push(operand);
@@ -66,24 +65,20 @@ namespace 小算盤
                             break;
                     }
                 }
-                position += 1;
             }
             result = stack.Pop();
             return result;
         }
 
-        private static string[] ConvertToPosfix(string infix)
+        private static Queue<string> ConvertToPosfix(string infix)
         {
             var charAry = infix.Replace(" ", "").ToCharArray();
             StringBuilder sbTemp = new StringBuilder();
             char @char;
-            //Queue<string> posfix = new Queue<string>();
-            string[] posfix = new string[100];
-            //int q = 0;
+            Queue<string> posfix = new Queue<string>();
             Stack<Priority> stack = new Stack<Priority>();
 
             int position = 0;
-            int posPosition = 0;
             int length = charAry.Count();
             while (position < length)
             {
@@ -99,36 +94,30 @@ namespace 小算盤
                     //暫存內不是空值，且遇到 (，表示沒有輸入 乘號，先處理 乘號再處理 (
                     if (sbTemp.Length != 0 && @operator.OP == "(")
                     {
-                        ProcessOperator(OperatorMap['*'], stack, posfix, ref posPosition);
+                        ProcessOperator(OperatorMap['*'], stack, posfix);
                     }
                     if (sbTemp.Length != 0)
                     {
                         //先將暫存數字放入佇列
-                        posfix[posPosition] = sbTemp.ToString();
-                        posPosition++;
-                        //posfix.Enqueue(sbTemp.ToString());
+                        posfix.Enqueue(sbTemp.ToString());
                     }
-                    ProcessOperator(@operator, stack, posfix, ref posPosition);
+                    ProcessOperator(@operator, stack, posfix);
                     sbTemp.Clear();
                 }
                 position += 1;
             }
             if (sbTemp.Length != 0)
             {
-                posfix[posPosition] = sbTemp.ToString();
-                posPosition++;
-                //posfix.Enqueue(sbTemp.ToString());
+                posfix.Enqueue(sbTemp.ToString());
             }
             while (stack.Count != 0)
             {
-                //posfix.Enqueue(stack.Pop().OP);
-                posfix[posPosition] = stack.Pop().OP;
-                posPosition++;
+                posfix.Enqueue(stack.Pop().OP);
             }
             return posfix;
         }
 
-        private static void ProcessOperator(Priority @operator, Stack<Priority> stack, string[] posfix, ref int position)
+        private static void ProcessOperator(Priority @operator, Stack<Priority> stack, Queue<string> posfix)
         {
             while (true)
             {
@@ -141,8 +130,7 @@ namespace 小算盤
                     }
                     else
                     {
-                        posfix[position] = op;
-                        position++;
+                        posfix.Enqueue(op);
                     }
                 }
                 else if (stack.Count == 0 || @operator.ICP > stack.Peek().ISP)
@@ -153,8 +141,7 @@ namespace 小算盤
                 else if (@operator.ICP <= stack.Peek().ISP)
                 {
                     var op = stack.Pop().OP;
-                    posfix[position] = op;
-                    position++;
+                    posfix.Enqueue(op);
                 }
                 else
                 {

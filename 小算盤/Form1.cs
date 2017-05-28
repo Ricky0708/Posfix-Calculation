@@ -22,20 +22,29 @@ namespace 小算盤
         {
             var formula = textBox1.Text;
             int aa = 1000000;
-            var check = Formula.Calculate(textBox1.Text).ToString();
-            for (int i = 0; i < 1000000; i++)
+            var check = FormulaUseQueue.Calculate(formula).ToString();
+
+            for (int i = 0; i < 4; i++)
             {
-                var n = Formula.Calculate(formula).ToString();
-                if (n != check)
+                System.Threading.Thread th = new System.Threading.Thread(p =>
                 {
-                    MessageBox.Show("QQ");
-                }
-                aa -= 1;
-                if (aa == 0)
-                {
-                    MessageBox.Show("finish");
-                }
+                    while (aa > 0)
+                    {
+                        var n = Formula.Calculate(formula).ToString();
+                        if (n != check)
+                        {
+                            MessageBox.Show("QQ");
+                        }
+                        aa -= 1;
+                        if (aa == 0)
+                        {
+                            MessageBox.Show(n.ToString());
+                        }
+                    }
+                });
+                th.Start();
             }
+
         }
 
 
