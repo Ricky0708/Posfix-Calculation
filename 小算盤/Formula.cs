@@ -77,9 +77,7 @@ namespace 小算盤
             var charAry = infix.Replace(" ", "").ToCharArray();
             StringBuilder sbTemp = new StringBuilder();
             char @char;
-            //Queue<string> posfix = new Queue<string>();
             string[] posfix = new string[100];
-            //int q = 0;
             Stack<Priority> stack = new Stack<Priority>();
 
             int position = 0;
@@ -99,36 +97,33 @@ namespace 小算盤
                     //暫存內不是空值，且遇到 (，表示沒有輸入 乘號，先處理 乘號再處理 (
                     if (sbTemp.Length != 0 && @operator.OP == "(")
                     {
-                        ProcessOperator(OperatorMap['*'], stack, posfix, ref posPosition);
+                        ProcessOperator(OperatorMap['*'], stack, ref posfix, ref posPosition);
                     }
                     if (sbTemp.Length != 0)
                     {
                         //先將暫存數字放入佇列
-                        posfix[posPosition] = sbTemp.ToString();
-                        posPosition++;
-                        //posfix.Enqueue(sbTemp.ToString());
+                        InsertToPosfix(sbTemp.ToString(), ref posfix, ref posPosition);
                     }
-                    ProcessOperator(@operator, stack, posfix, ref posPosition);
+                    ProcessOperator(@operator, stack, ref posfix, ref posPosition);
                     sbTemp.Clear();
                 }
+
                 position += 1;
             }
             if (sbTemp.Length != 0)
             {
-                posfix[posPosition] = sbTemp.ToString();
-                posPosition++;
-                //posfix.Enqueue(sbTemp.ToString());
+                InsertToPosfix(sbTemp.ToString(), ref posfix, ref posPosition);
             }
             while (stack.Count != 0)
             {
                 //posfix.Enqueue(stack.Pop().OP);
-                posfix[posPosition] = stack.Pop().OP;
-                posPosition++;
+                InsertToPosfix(stack.Pop().OP, ref posfix, ref posPosition);
             }
+
             return posfix;
         }
 
-        private static void ProcessOperator(Priority @operator, Stack<Priority> stack, string[] posfix, ref int position)
+        private static void ProcessOperator(Priority @operator, Stack<Priority> stack, ref string[] posfix, ref int position)
         {
             while (true)
             {
@@ -141,8 +136,7 @@ namespace 小算盤
                     }
                     else
                     {
-                        posfix[position] = op;
-                        position++;
+                        InsertToPosfix(op, ref posfix, ref position);
                     }
                 }
                 else if (stack.Count == 0 || @operator.ICP > stack.Peek().ISP)
@@ -153,14 +147,23 @@ namespace 小算盤
                 else if (@operator.ICP <= stack.Peek().ISP)
                 {
                     var op = stack.Pop().OP;
-                    posfix[position] = op;
-                    position++;
+                    InsertToPosfix(op, ref posfix, ref position);
                 }
                 else
                 {
                     break;
                 }
             }
+        }
+
+        private static void InsertToPosfix(string op, ref string[] posfix, ref int position)
+        {
+            while (posfix.Length <= position)
+            {
+                Array.Resize<string>(ref posfix, posfix.Length + 10);
+            }
+            posfix[position] = op;
+            position++;
         }
 
         private class Priority
